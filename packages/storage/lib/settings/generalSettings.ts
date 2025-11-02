@@ -20,7 +20,6 @@ export type GeneralSettingsStorage = BaseStorage<GeneralSettingsConfig> & {
   updateSettings: (settings: Partial<GeneralSettingsConfig>) => Promise<void>;
   getSettings: () => Promise<GeneralSettingsConfig>;
   resetToDefaults: () => Promise<void>;
-  setSystemPrompt: (systemPrompt: string) => Promise<void>;
 };
 
 // Default settings
@@ -67,9 +66,5 @@ export const generalSettingsStore: GeneralSettingsStorage = {
   },
   async resetToDefaults() {
     await storage.set(DEFAULT_GENERAL_SETTINGS);
-  },
-  async setSystemPrompt(systemPrompt: string) {
-    const currentSettings = (await storage.get()) || DEFAULT_GENERAL_SETTINGS;
-    await storage.set({ ...currentSettings, systemPrompt });
   },
 };

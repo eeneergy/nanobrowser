@@ -262,6 +262,12 @@
   "options_general_replayHistoricalTasks_desc": {
     "message": "Enable storing and replaying of agent step history (experimental, may have issues)"
   },
+  "options_general_systemPrompt": {
+    "message": "System Prompt"
+  },
+  "options_general_systemPrompt_desc": {
+    "message": "A custom instruction for the AI agent to follow"
+  },
 
   "options_models_providers_header": {
     "message": "LLM Providers"
