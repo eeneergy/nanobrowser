@@ -38,6 +38,7 @@ const SidePanel = () => {
   const [isProcessingSpeech, setIsProcessingSpeech] = useState(false);
   const [isReplaying, setIsReplaying] = useState(false);
   const [replayEnabled, setReplayEnabled] = useState(false);
+  const [systemPrompt, setSystemPrompt] = useState('');
   const sessionIdRef = useRef<string | null>(null);
   const isReplayingRef = useRef<boolean>(false);
   const portRef = useRef<chrome.runtime.Port | null>(null);
@@ -80,9 +81,19 @@ const SidePanel = () => {
     try {
       const settings = await generalSettingsStore.getSettings();
       setReplayEnabled(settings.replayHistoricalTasks);
+      setSystemPrompt(settings.systemPrompt || '');
     } catch (error) {
       console.error('Error loading general settings:', error);
       setReplayEnabled(false);
+    }
+  }, []);
+
+  const handleSystemPromptChange = useCallback(async (value: string) => {
+    setSystemPrompt(value);
+    try {
+      await generalSettingsStore.setSystemPrompt(value);
+    } catch (error) {
+      console.error('Error saving system prompt:', error);
     }
   }, []);
 
@@ -617,6 +628,7 @@ const SidePanel = () => {
           task: text,
           taskId: sessionIdRef.current,
           tabId,
+          systemPrompt,
         });
         console.log('follow_up_task sent', text, tabId, sessionIdRef.current);
       } else {
@@ -626,6 +638,7 @@ const SidePanel = () => {
           task: text,
           taskId: sessionIdRef.current,
           tabId,
+          systemPrompt,
         });
         console.log('new_task sent', text, tabId, sessionIdRef.current);
       }
@@ -1141,6 +1154,8 @@ const SidePanel = () => {
                         isDarkMode={isDarkMode}
                         historicalSessionId={isHistoricalSession && replayEnabled ? currentSessionId : null}
                         onReplay={handleReplay}
+                        systemPrompt={systemPrompt}
+                        onSystemPromptChange={handleSystemPromptChange}
                       />
                     </div>
                     <div className="flex-1 overflow-y-auto">
@@ -1179,6 +1194,8 @@ const SidePanel = () => {
                       isDarkMode={isDarkMode}
                       historicalSessionId={isHistoricalSession && replayEnabled ? currentSessionId : null}
                       onReplay={handleReplay}
+                      systemPrompt={systemPrompt}
+                      onSystemPromptChange={handleSystemPromptChange}
                     />
                   </div>
                 )}

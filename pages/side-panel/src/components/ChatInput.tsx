@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { FaMicrophone } from 'react-icons/fa';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { t } from '@extension/i18n';
+import SystemPrompt from './SystemPrompt';
 
 interface ChatInputProps {
   onSendMessage: (text: string, displayText?: string) => void;
@@ -16,6 +17,8 @@ interface ChatInputProps {
   // Historical session ID - if provided, shows replay button instead of send button
   historicalSessionId?: string | null;
   onReplay?: (sessionId: string) => void;
+  systemPrompt: string;
+  onSystemPromptChange: (value: string) => void;
 }
 
 // File attachment interface
@@ -37,6 +40,8 @@ export default function ChatInput({
   isDarkMode = false,
   historicalSessionId,
   onReplay,
+  systemPrompt,
+  onSystemPromptChange,
 }: ChatInputProps) {
   const [text, setText] = useState('');
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
@@ -187,6 +192,7 @@ export default function ChatInput({
       onSubmit={handleSubmit}
       className={`overflow-hidden rounded-lg border transition-colors ${disabled ? 'cursor-not-allowed' : 'focus-within:border-sky-400 hover:border-sky-400'} ${isDarkMode ? 'border-slate-700' : ''}`}
       aria-label={t('chat_input_form')}>
+      <SystemPrompt value={systemPrompt} onChange={onSystemPromptChange} isDarkMode={isDarkMode} />
       <div className="flex flex-col">
         {/* File attachments display */}
         {attachedFiles.length > 0 && (
